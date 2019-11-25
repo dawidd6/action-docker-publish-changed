@@ -168,7 +168,7 @@ else
     exit 1 unless system("docker", "build", "-t", "#{username}/#{image}:#{tag}", image)
     exit 1 unless system("docker", "push", "#{username}/#{image}:#{tag}")
   end
-
-  # Print images
-  puts "::set-output name=images::#{images.join(",")}"
 end
+
+# Print images
+puts "::set-output name=images::#{images.join(",")}"
