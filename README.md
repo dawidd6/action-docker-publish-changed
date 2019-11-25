@@ -1,5 +1,17 @@
-# Container Action Template
+# Build and publish changed Docker image Github Action
 
-To get started, click the `Use this template` button on this repository [which will create a new repository based on this template](https://github.blog/2019-06-06-generate-new-repositories-with-repository-templates/).
+An action that examines which paths were modified by pushed commits and determines which images should be built and published.
 
-For info on how to build your first Container action, see the [toolkit docs folder](https://github.com/actions/toolkit/blob/master/docs/container-action.md).
+It will only work if one has a repository consisting of multiple directories (image names) with Dockerfiles in them. See for example: https://github.com/dawidd6/docker.
+
+## Usage
+
+```yaml
+- name: Checkout
+  uses: actions/checkout@v1
+- name: Publish
+  uses: dawidd6/action-docker-publish-changed@master
+  id: docker
+- name: Print
+  run: echo ${{steps.docker.outputs.images}}
+```

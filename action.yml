@@ -1,12 +1,30 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
-inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+name: Build and publish changed Docker image
+description: Build and publish Docker images based on changed paths
+author: dawidd6
+branding:
+  icon: anchor
+  color: blue
+inputs:
+  tag:
+    description: How built images should be tagged
+    required: false
+    default: latest
+  whitelist:
+    description: Which modified files should trigger the build (comma separated)
+    required: false
+    default: Dockerfile
+  github_token:
+    description: Github token
+    required: false
+  docker_username:
+    description: DockerHub username
+    required: false
+  docker_password:
+    description: DockerHub password
+    required: false
+outputs:
+  images:
+    description: Built images names (comma separated)
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.myInput }}
+  using: docker
+  image: Dockerfile

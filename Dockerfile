@@ -1,7 +1,8 @@
-FROM alpine:3.10
+FROM docker
 
-COPY LICENSE README.md /
+RUN apk -U add ruby ruby-rdoc
+RUN gem install octokit
 
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.rb /
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.rb"]

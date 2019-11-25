@@ -1,0 +1,17 @@
+name: Test action
+
+on: push
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Test
+        id: test
+        uses: ./
+        env:
+          TESTING: 1
+      - name: Print images
+        run: echo ${{ steps.test.outputs.images }}
