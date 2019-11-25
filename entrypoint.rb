@@ -4,6 +4,13 @@
 require 'json'
 require 'octokit'
 
+def dummy_check
+  %w[
+    test-image
+    image-name
+  ]
+end
+
 def dummy_event
   <<~ELO
     {
@@ -126,7 +133,7 @@ event["commits"].each do |commit|
   commit["files"].each do |file|
     # We do not want to build removed image
     # TODO think about removing the image from dockerhub
-    next if file["removed"]
+    next if file["status"] == "removed"
 
     # Get info
     image_path = file["filename"]
@@ -143,16 +150,25 @@ event["commits"].each do |commit|
   end
 end
 
-# Build and publish images
-images.each do |image|
-  puts "==> Building \"#{image}\" image"
+# Test or build and publish
+if testing
+  # Test
+  if dummy_check.sort == images.sort
+    puts "==> OK"
+    puts images
+  else
+    puts "==> FAIL"
+    exit 1
+  end
+else
+  # Build and publish images
+  images.each do |image|
+    puts "==> Building \"#{image}\" image"
+    exit 1 unless system("docker", "login", "-u", username, "-p", password)
+    exit 1 unless system("docker", "build", "-t", "#{username}/#{image}:#{tag}", image)
+    exit 1 unless system("docker", "push", "#{username}/#{image}:#{tag}")
+  end
 
-  next if testing
-
-  exit 1 unless system("docker", "login", "-u", username, "-p", password)
-  exit 1 unless system("docker", "build", "-t", "#{username}/#{image}:#{tag}", image)
-  exit 1 unless system("docker", "push", "#{username}/#{image}:#{tag}")
+  # Print images
+  puts "::set-output name=images::#{images.join(",")}"
 end
-
-# Print images
-puts "::set-output name=images::#{images.join(",")}"
