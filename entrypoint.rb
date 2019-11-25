@@ -127,7 +127,7 @@ images = []
 # Loop over all commits
 event["commits"].each do |commit|
   # Parse appropriate JSON object
-  commit = JSON.parse(testing ? dummy_commit : client.commit(repo, commit["id"]))
+  commit = testing ? JSON.parse(dummy_commit) : client.commit(repo, commit["id"])
 
   # Loop over added files
   commit["files"].each do |file|
