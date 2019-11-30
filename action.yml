@@ -5,14 +5,6 @@ branding:
   icon: anchor
   color: blue
 inputs:
-  tag:
-    description: How built images should be tagged
-    required: false
-    default: latest
-  whitelist:
-    description: Which modified files should trigger the build (comma separated)
-    required: false
-    default: Dockerfile
   github_token:
     description: Github token
     required: false
@@ -22,9 +14,6 @@ inputs:
   docker_password:
     description: DockerHub password
     required: false
-outputs:
-  images:
-    description: Built images names (comma separated)
 runs:
   using: docker
   image: Dockerfile

@@ -3,6 +3,6 @@ FROM docker
 RUN apk -U add ruby ruby-rdoc
 RUN gem install octokit
 
-COPY entrypoint.rb /
+COPY *.rb /
 
-ENTRYPOINT ["/entrypoint.rb"]
+ENTRYPOINT ["/main.rb"]
