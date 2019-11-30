@@ -1,6 +1,6 @@
 FROM docker
 
-RUN apk -U add ruby ruby-rdoc
+RUN apk -U add ruby-full
 RUN gem install octokit
 
 COPY *.rb /
