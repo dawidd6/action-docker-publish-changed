@@ -9,9 +9,10 @@ It will only work if one has a repository consisting of multiple directories (im
 ```yaml
 - name: Checkout
   uses: actions/checkout@v1
-- name: Publish
+- name: Publish changed images
   uses: dawidd6/action-docker-publish-changed@master
-  id: docker
-- name: Print
-  run: echo ${{steps.docker.outputs.images}}
+  with:
+    docker_username: ${{github.event.repository.owner.login}}
+    docker_password: ${{secrets.PASS}}
+    github_token: ${{secrets.GITHUB_TOKEN}}
 ```
