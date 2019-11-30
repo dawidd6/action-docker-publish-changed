@@ -11,75 +11,44 @@ class ChangedImagesTest < Test::Unit::TestCase
       {
         "files": [
           {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "test-image/Dockerfile",
-            "status": "added",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "added"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "test-image/Dockerfile",
-            "status": "modified",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "modified"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "test-image/Dockerfile",
-            "status": "removed",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "removed"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "Dockerfile",
-            "status": "added",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "added"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "README.md",
-            "status": "modified",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "modified"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": ".github/workflows/test.yml",
-            "status": "modified",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "modified"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "hello/there/image-name/Dockerfile",
-            "status": "modified",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "modified"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "deleted-image/Dockerfile",
-            "status": "removed",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "removed"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "do/not/capture",
-            "status": "modified",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "modified"
           }, {
-            "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "filename": "src/.gitignore",
-            "status": "added",
-            "additions": 0,
-            "deletions": 0,
-            "changes": 0
+            "status": "added"
+          }, {
+            "filename": "node_modules/something",
+            "status": "added"
+          }, {
+            "filename": "go.mod",
+            "status": "added"
+          }, {
+            "filename": "first/second/image-next/Dockerfile",
+            "status": "added"
           }
         ]
       }
@@ -88,6 +57,7 @@ class ChangedImagesTest < Test::Unit::TestCase
     expected = %w[
       test-image
       image-name
+      image-next
     ]
     got = changed_images(JSON.parse(commit))
 
