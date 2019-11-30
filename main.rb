@@ -3,6 +3,7 @@
 
 require 'json'
 require 'octokit'
+require_relative 'lib.rb'
 
 path = ENV['GITHUB_EVENT_PATH']
 repo = ENV['GITHUB_REPOSITORY']
