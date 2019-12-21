@@ -16,3 +16,5 @@ jobs:
         uses: ./
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
+          docker_username: ${{secrets.DOCKER_USERNAME}}
+          docker_password: ${{secrets.DOCKER_PASSWORD}}
