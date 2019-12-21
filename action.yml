@@ -1,5 +1,5 @@
-name: Build and publish changed Docker image
-description: Build and publish Docker images based on changed paths
+name: Build and publish changed multi platform Docker images
+description: Build and publish multi platform Docker images based on changed paths from pushed commits
 author: dawidd6
 branding:
   icon: anchor
