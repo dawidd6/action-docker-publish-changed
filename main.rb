@@ -10,7 +10,11 @@ repo = ENV['GITHUB_REPOSITORY']
 token = ENV['INPUT_GITHUB_TOKEN']
 username = ENV['INPUT_DOCKER_USERNAME']
 password = ENV['INPUT_DOCKER_PASSWORD']
-tag = 'latest'
+platforms = ENV['INPUT_PLATFORMS'] || 'linux/amd64'
+tag = ENV['INPUT_TAG'] || 'latest'
+binfmt_tag = '66f9012c56a8316f9244ffd7622d7c21c1f6f28d'
+buildx_url = 'https://github.com/docker/buildx/releases/download/v0.3.1/buildx-v0.3.1.linux-amd64'
+buildx_path = '/usr/bin/buildx'
 file = File.read(path)
 json = JSON.parse(file)
 client = Octokit::Client.new(access_token: token)
@@ -23,9 +27,14 @@ def safe_system(*cmd)
   exit 1 unless system(*cmd)
 end
 
+safe_system('wget', '-O', buildx_path, buildx_url)
+safe_system('chmod', '+x', buildx_path)
+safe_system('docker', 'login', '-u', username, '-p', password)
+safe_system('docker', 'run', '--privileged', "docker/binfmt:#{binfmt_tag}")
+safe_system('buildx', 'create', '--use', '--name', 'builder')
+safe_system('buildx', 'inspect', '--bootstrap', 'builder')
+
 images.each do |image|
-  puts "==> Building \"#{image}\" image"
-  safe_system('docker', 'login', '-u', username, '-p', password)
-  safe_system('docker', 'build', '-t', "#{username}/#{image}:#{tag}", image)
-  safe_system('docker', 'push', "#{username}/#{image}:#{tag}")
+  puts "------------------ BUILDING \"#{image}\" IMAGE ------------------"
+  safe_system('buildx', 'build', '--push', '--platform', platforms, '-t', "#{username}/#{image}:#{tag}", image)
 end

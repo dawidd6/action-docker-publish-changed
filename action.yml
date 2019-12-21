@@ -14,6 +14,14 @@ inputs:
   docker_password:
     description: DockerHub password
     required: false
+  platforms:
+    description: Platforms for which the image will be built (comma separated)
+    required: false
+    default: linux/amd64
+  tag:
+    description: Image tag
+    required: false
+    default: latest
 runs:
   using: docker
   image: Dockerfile
