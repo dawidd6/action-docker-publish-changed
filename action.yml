@@ -7,13 +7,13 @@ branding:
 inputs:
   github_token:
     description: Github token
-    required: false
+    required: true
   docker_username:
     description: DockerHub username
-    required: false
+    required: true
   docker_password:
     description: DockerHub password
-    required: false
+    required: true
   platforms:
     description: Platforms for which the image will be built (comma separated)
     required: false
