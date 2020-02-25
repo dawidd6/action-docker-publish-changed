@@ -8,3 +8,7 @@ def changed_images(hash)
     file['filename'].split('/')[-2]
   end.uniq.compact.reject(&:empty?)
 end
+
+def safe_system(*cmd)
+  exit 1 unless system(*cmd)
+end

@@ -20,10 +20,6 @@ images = json['commits'].map do |commit|
   changed_images(commit)
 end.flatten
 
-def safe_system(*cmd)
-  exit 1 unless system(*cmd)
-end
-
 safe_system('docker', 'login', '-u', username, '-p', password)
 safe_system('docker', 'run', '--privileged', "docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d")
 safe_system('buildx', 'create', '--use', '--name', 'builder')
