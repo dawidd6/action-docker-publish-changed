@@ -7,11 +7,13 @@ require_relative 'lib.rb'
 
 path = ENV['GITHUB_EVENT_PATH']
 repo = ENV['GITHUB_REPOSITORY']
+
 token = ENV['INPUT_GITHUB_TOKEN']
 username = ENV['INPUT_DOCKER_USERNAME']
 password = ENV['INPUT_DOCKER_PASSWORD']
 platforms = ENV['INPUT_PLATFORMS'] || 'linux/amd64'
 tag = ENV['INPUT_TAG'] || 'latest'
+
 file = File.read(path)
 json = JSON.parse(file)
 client = Octokit::Client.new(access_token: token)
