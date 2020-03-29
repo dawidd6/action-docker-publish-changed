@@ -10,7 +10,7 @@ It will only work if one has a repository consisting of multiple directories (im
 - name: Checkout
   uses: actions/checkout@v1
 - name: Publish changed images
-  uses: dawidd6/action-docker-publish-changed@master
+  uses: dawidd6/action-docker-publish-changed@v2
   with:
     docker_username: ${{github.event.repository.owner.login}}
     docker_password: ${{secrets.PASS}}
