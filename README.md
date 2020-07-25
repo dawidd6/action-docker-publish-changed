@@ -4,15 +4,18 @@ An action that examines which paths were modified by pushed commits and determin
 
 ## Usage
 
+> If `username` or `password` inputs are not provided, images will not be pushed to registry
+
 ```yaml
 - name: Checkout code
   uses: actions/checkout@v2
 - name: Publish changed images
-  uses: dawidd6/action-docker-publish-changed@v2
+  uses: dawidd6/action-docker-publish-changed@v3
   with:
-    docker_username: ${{github.event.repository.owner.login}}
-    docker_password: ${{secrets.PASS}}
-    github_token: ${{secrets.GITHUB_TOKEN}}
+    username: ${{secrets.USER}}
+    password: ${{secrets.PASS}}
+    token: ${{github.token}}
+    registry: docker.io
     platforms: linux/amd64,linux/arm64,linux/arm
     tag: latest
 ```
