@@ -16,8 +16,7 @@ Uses [`buildx`](https://github.com/docker/buildx) under the hood for building mu
   with:
     username: ${{secrets.USER}}
     password: ${{secrets.PASS}}
-    token: ${{github.token}}
-    registry: docker.io
     platforms: linux/amd64,linux/arm64,linux/arm
     tag: latest
+    ghpr: false
 ```
