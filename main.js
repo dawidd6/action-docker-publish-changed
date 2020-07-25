@@ -13,6 +13,8 @@ async function main() {
     const platforms = core.getInput("platforms", { required: true })
     const tag = core.getInput("tag", { required: true })
 
+    const registry = ghpr ? "docker.pkg.github.com" : "docker.io"
+
     const client = github.getOctokit(token)
 
     // Parse JSON event file.
@@ -85,7 +87,7 @@ async function main() {
     // Build images.
     for (const dir of dirs) {
       const image = path.basename(dir)
-      const registry = ghpr ? "docker.pkg.github.com" : "docker.io"
+
       await exec.exec("docker", [
         "buildx",
         "build",
