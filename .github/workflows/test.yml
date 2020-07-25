@@ -1,12 +1,26 @@
 name: Test Action
 
-on: push
+on:
+  push:
+    branches:
+      - '*'
 
 jobs:
-  main:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Test
         uses: ./
+  test-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test
+        uses: ./
+        with:
+          username: ${{github.actor}}
+          password: ${{github.token}}
+          registry: docker.pkg.github.com
