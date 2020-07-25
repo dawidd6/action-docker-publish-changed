@@ -91,7 +91,7 @@ async function main() {
         "build",
         ... (username && password) ? ["--push"] : [],
         "--platform", platforms,
-        "-t", `${registry}/${username ? username : github.context.actor}${ghpr ? ("/" + github.context.repo) : ""}/${image}:${tag}`,
+        "-t", `${registry}/${username ? username : github.context.actor}${ghpr ? ("/" + github.context.repo.repo) : ""}/${image}:${tag}`,
         dir
       ])
     }
