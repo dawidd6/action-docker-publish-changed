@@ -1,6 +1,8 @@
 # Build and publish changed Docker image for multiple platforms GitHub Action
 
-An action that examines which paths were modified by pushed commits and determines which images should be built and published. Uses [`buildx`](https://github.com/docker/buildx) under the hood for building multi platform images.
+An action that examines which paths were modified by pushed commits and determines which images should be built and published.
+
+Uses [`buildx`](https://github.com/docker/buildx) under the hood for building multi platform images.
 
 ## Usage
 
