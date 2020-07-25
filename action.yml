@@ -7,11 +7,11 @@ branding:
 inputs:
   token:
     description: GitHub token
-    required: true
+    required: false
     default: ${{github.token}}
   registry:
     description: Registry url
-    required: true
+    required: false
     default: docker.io
   username:
     description: Registry username
@@ -21,11 +21,11 @@ inputs:
     required: false
   platforms:
     description: Platforms for which the image will be built (comma separated)
-    required: true
+    required: false
     default: linux/amd64
   tag:
     description: Image tag
-    required: true
+    required: false
     default: latest
 runs:
   using: node12
