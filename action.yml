@@ -9,10 +9,10 @@ inputs:
     description: GitHub token
     required: false
     default: ${{github.token}}
-  registry:
-    description: Registry url
+  ghpr:
+    description: GitHub Package Registry or DockerHub
     required: false
-    default: docker.io
+    default: false
   username:
     description: Registry username
     required: false
