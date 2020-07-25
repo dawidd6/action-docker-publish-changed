@@ -1,27 +1,32 @@
-name: Build and publish changed multi platform Docker images
-description: Build and publish multi platform Docker images based on changed paths from pushed commits using buildx
+name: Build and publish multi platform Docker images
+description: Build and publish multi platform Docker images based on changed paths from pushed commits
 author: dawidd6
 branding:
   icon: anchor
   color: blue
 inputs:
-  github_token:
-    description: Github token
+  token:
+    description: GitHub token
     required: true
-  docker_username:
-    description: DockerHub username
+    default: ${{github.token}}
+  registry:
+    description: Registry url
     required: true
-  docker_password:
-    description: DockerHub password
-    required: true
+    default: docker.io
+  username:
+    description: Registry username
+    required: false
+  password:
+    description: Registry password
+    required: false
   platforms:
     description: Platforms for which the image will be built (comma separated)
-    required: false
+    required: true
     default: linux/amd64
   tag:
     description: Image tag
-    required: false
+    required: true
     default: latest
 runs:
-  using: docker
-  image: Dockerfile
+  using: node12
+  main: main.js
