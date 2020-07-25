@@ -7,7 +7,7 @@ const fs = require('fs')
 async function main() {
   try {
     const token = core.getInput("token", { required: true })
-    const registry = core.getInput("registry", { required: true })
+    const ghpr = core.getInput("ghpr", { required: true })
     const username = core.getInput("username")
     const password = core.getInput("password")
     const platforms = core.getInput("platforms", { required: true })
@@ -85,12 +85,13 @@ async function main() {
     // Build images.
     for (const dir of dirs) {
       const image = path.basename(dir)
+      const registry = ghpr ? "docker.pkg.github.com" : "docker.io"
       await exec.exec("docker", [
         "buildx",
         "build",
         ... (username && password) ? ["--push"] : [],
         "--platform", platforms,
-        "-t", `${registry}/${username ? username : github.context.actor}/${image}:${tag}`,
+        "-t", `${registry}/${username ? username : github.context.actor}${ghpr ? ("/" + github.context.repo) : ""}/${image}:${tag}`,
         dir
       ])
     }
