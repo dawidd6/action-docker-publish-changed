@@ -1,3 +1,3 @@
-FROM ubuntu:focal
+FROM alpine
 
 RUN echo test > /test
