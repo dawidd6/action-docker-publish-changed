@@ -7,19 +7,17 @@ const fs = require('fs')
 async function main() {
   try {
     const token = core.getInput("token", { required: true })
-    const ghpr = core.getInput("ghpr", { required: true })
     const username = core.getInput("username")
     const password = core.getInput("password")
     const platforms = core.getInput("platforms", { required: true })
     const tag = core.getInput("tag", { required: true })
 
-    const registry = ghpr ? "docker.pkg.github.com" : "docker.io"
-
     const client = github.getOctokit(token)
 
     // Parse JSON event file.
-    const rawEvent = fs.readFileSync(process.env.GITHUB_EVENT_PATH, { encoding: "utf-8" })
-    const event = JSON.parse(rawEvent)
+    const eventPath = process.env.GITHUB_EVENT_PATH
+    const eventJson = fs.readFileSync(eventPath, { encoding: "utf-8" })
+    const event = JSON.parse(eventJson)
 
     // Get directories where changed files in pushed commits reside.
     let changedDirs = []
@@ -31,12 +29,14 @@ async function main() {
 
       for (const file of commit.data.files) {
         const dir = path.dirname(file.filename)
+
+        if (changedDirs.includes(dir)) {
+          continue
+        }
+
         changedDirs.push(dir)
       }
     }
-
-    // Deduplicate directories.
-    changedDirs = Array.from(new Set(changedDirs))
 
     // Determine images names by reading every directory.
     // If a Dockerfile is found in a directory then "directory name" == "image name".
@@ -68,13 +68,17 @@ async function main() {
       }
 
       if (foundDockerfile) {
+        if (dirs.includes(currentDir)) {
+          continue
+        }
+
         dirs.push(currentDir)
       }
     }
 
     // Login to registry if desired.
     if (username && password) {
-      await exec.exec("docker", ["login", registry, "-u", username, "-p", password])
+      await exec.exec("docker", ["login", "-u", username, "-p", password])
     }
 
     // Setup buildx if there are any images to be built.
@@ -93,7 +97,7 @@ async function main() {
         "build",
         ... (username && password) ? ["--push"] : [],
         "--platform", platforms,
-        "-t", `${registry}/${username ? username : github.context.actor}${ghpr ? ("/" + github.context.repo.repo) : ""}/${image}:${tag}`,
+        "-t", `${username ? username : github.context.actor}/${image}:${tag}`,
         dir
       ])
     }
