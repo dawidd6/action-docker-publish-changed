@@ -50,6 +50,12 @@ async function main() {
       }
     }
 
+    // Exit early if no images to be built
+    if (dirToImage.size == 0) {
+      console.log("No images to build!")
+      return
+    }
+
     core.startGroup("==> Print details")
     console.log(dirToImage)
     core.endGroup()
@@ -61,14 +67,12 @@ async function main() {
       core.endGroup()
     }
 
-    // Setup buildx if there are any images to be built
-    if (dirToImage.size > 0) {
-      core.startGroup("==> Prepare buildx")
-      await exec.exec("docker", ["run", "--privileged", "docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d"])
-      await exec.exec("docker", ["buildx", "create", "--use", "--name", "builder"])
-      await exec.exec("docker", ["buildx", "inspect", "--bootstrap", "builder"])
-      core.endGroup()
-    }
+    // Setup buildx
+    core.startGroup("==> Prepare buildx")
+    await exec.exec("docker", ["run", "--privileged", "docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d"])
+    await exec.exec("docker", ["buildx", "create", "--use", "--name", "builder"])
+    await exec.exec("docker", ["buildx", "inspect", "--bootstrap", "builder"])
+    core.endGroup()
 
     // Build images
     for (const dirAndImage of dirToImage) {
