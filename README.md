@@ -6,7 +6,7 @@ Uses [`buildx`](https://github.com/docker/buildx) under the hood for building mu
 
 ## Usage
 
-> If `username` or `password` inputs are not provided, images will not be pushed to registry
+> If `username` or `password` inputs are not provided, images will not be pushed to DockerHub.
 
 ```yaml
 - name: Checkout code
@@ -18,5 +18,4 @@ Uses [`buildx`](https://github.com/docker/buildx) under the hood for building mu
     password: ${{secrets.PASS}}
     platforms: linux/amd64,linux/arm64,linux/arm
     tag: latest
-    ghpr: false
 ```
