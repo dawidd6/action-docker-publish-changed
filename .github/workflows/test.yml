@@ -21,6 +21,5 @@ jobs:
       - name: Test
         uses: ./
         with:
-          username: ${{github.actor}}
-          password: ${{github.token}}
-          ghpr: true
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
