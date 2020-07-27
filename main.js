@@ -22,23 +22,16 @@ async function main() {
     const dirToImage = new Map()
 
     // Determine changed dirs and images
-    core.startGroup("==> Print details")
     for (const eventCommit of event.commits) {
       const commit = await client.repos.getCommit({
         ...github.context.repo,
         ref: eventCommit.id
       })
 
-      core.info(`Commit = ${commit.data.sha}`)
-
       for (const file of commit.data.files) {
-        core.info(`  ${file.filename}`)
-
         process.chdir(path.dirname(file.filename))
 
         while (true) {
-          core.info(`    ${dir}`)
-
           const dir = process.cwd()
           const image = path.basename(dir)
           const files = fs.readdirSync(dir)
@@ -56,6 +49,9 @@ async function main() {
         }
       }
     }
+
+    core.startGroup("==> Print details")
+    console.log(dirToImage)
     core.endGroup()
 
     // Login to registry if desired
