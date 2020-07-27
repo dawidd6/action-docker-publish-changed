@@ -9,15 +9,11 @@ inputs:
     description: GitHub token
     required: false
     default: ${{github.token}}
-  ghpr:
-    description: GitHub Package Registry or DockerHub
-    required: false
-    default: false
   username:
-    description: Registry username
+    description: DockerHub username
     required: false
   password:
-    description: Registry password
+    description: DockerHub password
     required: false
   platforms:
     description: Platforms for which the image will be built (comma separated)
