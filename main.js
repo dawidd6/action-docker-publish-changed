@@ -78,20 +78,25 @@ async function main() {
 
     // Login to registry if desired.
     if (username && password) {
+      core.startGroup("Login")
       await exec.exec("docker", ["login", "-u", username, "-p", password])
+      core.endGroup()
     }
 
     // Setup buildx if there are any images to be built.
     if (dirs.length > 0) {
+      core.startGroup("Prepare")
       await exec.exec("docker", ["run", "--privileged", "docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d"])
       await exec.exec("docker", ["buildx", "create", "--use", "--name", "builder"])
       await exec.exec("docker", ["buildx", "inspect", "--bootstrap", "builder"])
+      core.endGroup()
     }
 
     // Build images.
     for (const dir of dirs) {
       const image = path.basename(dir)
 
+      core.startGroup(`Build ${image}`)
       await exec.exec("docker", [
         "buildx",
         "build",
@@ -100,6 +105,7 @@ async function main() {
         "-t", `${username ? username : github.context.actor}/${image}:${tag}`,
         dir
       ])
+      core.endGroup()
     }
   } catch (error) {
     core.setFailed(error.message)
