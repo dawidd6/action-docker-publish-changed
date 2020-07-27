@@ -14,13 +14,14 @@ async function main() {
 
     const client = github.getOctokit(token)
 
-    // Parse JSON event file.
+    // Parse JSON event file
     const eventPath = process.env.GITHUB_EVENT_PATH
     const eventJson = fs.readFileSync(eventPath, { encoding: "utf-8" })
     const event = JSON.parse(eventJson)
 
-    // Get directories where changed files in pushed commits reside.
-    let changedDirs = []
+    const dirToImage = new Map()
+
+    // Determine changed dirs and images
     for (const eventCommit of event.commits) {
       const commit = await client.repos.getCommit({
         ...github.context.repo,
@@ -28,63 +29,40 @@ async function main() {
       })
 
       for (const file of commit.data.files) {
-        const dir = path.dirname(file.filename)
+        process.chdir(path.dirname(file.filename))
 
-        if (changedDirs.includes(dir)) {
-          continue
-        }
+        while (true) {
+          const dir = process.cwd()
+          const image = path.basename(dir)
+          const files = fs.readdirSync(dir)
 
-        changedDirs.push(dir)
-      }
-    }
-
-    // Determine images names by reading every directory.
-    // If a Dockerfile is found in a directory then "directory name" == "image name".
-    // If not then go up the stack and repeat.
-    let dirs = []
-    for (const dir of changedDirs) {
-      let currentDir = dir
-      let foundDockerfile = false
-
-      do {
-        const files = fs.readdirSync(currentDir)
-
-        for (const file of files) {
-          if (file == "Dockerfile") {
-            foundDockerfile = true
+          if (files.includes("Dockerfile")) {
+            dirToImage.set(dir, image)
             break
           }
+
+          if (dir == process.env.GITHUB_WORKSPACE) {
+            break
+          }
+
+          process.chdir("..")
         }
-
-        if (foundDockerfile) {
-          break
-        }
-
-        currentDir = path.dirname(currentDir)
-      } while (currentDir != ".");
-
-      if (currentDir == ".") {
-        currentDir = path.resolve(currentDir)
-      }
-
-      if (foundDockerfile) {
-        if (dirs.includes(currentDir)) {
-          continue
-        }
-
-        dirs.push(currentDir)
       }
     }
 
-    // Login to registry if desired.
+    core.startGroup("==> Print details")
+    console.log(dirToImage)
+    core.endGroup()
+
+    // Login to registry if desired
     if (username && password) {
       core.startGroup("==> Login to DockerHub")
       await exec.exec("docker", ["login", "-u", username, "-p", password])
       core.endGroup()
     }
 
-    // Setup buildx if there are any images to be built.
-    if (dirs.length > 0) {
+    // Setup buildx if there are any images to be built
+    if (dirToImage.size > 0) {
       core.startGroup("==> Prepare buildx")
       await exec.exec("docker", ["run", "--privileged", "docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d"])
       await exec.exec("docker", ["buildx", "create", "--use", "--name", "builder"])
@@ -92,9 +70,10 @@ async function main() {
       core.endGroup()
     }
 
-    // Build images.
-    for (const dir of dirs) {
-      const image = path.basename(dir)
+    // Build images
+    for (const dirAndImage of dirToImage) {
+      const dir = dirAndImage[0]
+      const image = dirAndImage[1]
 
       core.startGroup(`==> Build "${image}" image`)
       await exec.exec("docker", [
